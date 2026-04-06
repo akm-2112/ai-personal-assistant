@@ -14,7 +14,7 @@ class getLocalTime implements Tool
      */
     public function description(): Stringable|string
     {
-        return 'A description of the tool.';
+        return 'Get the local time in Myanmar';
     }
 
     /**
@@ -22,7 +22,7 @@ class getLocalTime implements Tool
      */
     public function handle(Request $request): Stringable|string
     {
-        //
+        return now()->timezone('Asia/Yangon')->toDateTimeString();
     }
 
     /**
