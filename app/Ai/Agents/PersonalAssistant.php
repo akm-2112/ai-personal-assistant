@@ -3,6 +3,7 @@
 namespace App\Ai\Agents;
 
 use App\Ai\Tools\getLocalTime;
+use App\Ai\Tools\ReadCalendar;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\Conversational;
 use Laravel\Ai\Contracts\HasTools;
@@ -44,6 +45,7 @@ class PersonalAssistant implements Agent, Conversational, HasTools
         return [
             new WebSearch(),
             new getLocalTime(),
+            new ReadCalendar(),
         ];
     }
 }

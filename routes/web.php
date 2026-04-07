@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssistantChatController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
