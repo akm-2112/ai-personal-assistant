@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => 'openai',
+    'default' => env('AI_PROVIDER', 'openai'),
     'default_for_images' => 'gemini',
     'default_for_audio' => 'openai',
     'default_for_transcription' => 'openai',
@@ -109,11 +109,25 @@ return [
             'driver' => 'openai',
             'key' => env('OPENAI_API_KEY'),
             'url' => env('OPENAI_URL', 'https://api.openai.com/v1'),
+            'models' => [
+                'text' => [
+                    'default' => env('OPENAI_MODEL', 'gpt-5.4'),
+                    'cheapest' => env('OPENAI_MODEL_CHEAPEST', 'gpt-5.4-nano'),
+                    'smartest' => env('OPENAI_MODEL_SMARTEST', env('OPENAI_MODEL', 'gpt-5.4-pro')),
+                ],
+            ],
         ],
 
         'openrouter' => [
             'driver' => 'openrouter',
-            'key' => env('OPENROUTER_API_KEY'),
+            'key' => env('OPENROUTER_API_KEY', env('OPENAI_API_KEY')),
+            'models' => [
+                'text' => [
+                    'default' => env('OPENROUTER_MODEL', env('OPENAI_MODEL', 'anthropic/claude-sonnet-4.6')),
+                    'cheapest' => env('OPENROUTER_MODEL_CHEAPEST', env('OPENROUTER_MODEL', env('OPENAI_MODEL', 'anthropic/claude-haiku-4.5'))),
+                    'smartest' => env('OPENROUTER_MODEL_SMARTEST', env('OPENROUTER_MODEL', env('OPENAI_MODEL', 'anthropic/claude-opus-4.6'))),
+                ],
+            ],
         ],
 
         'voyageai' => [

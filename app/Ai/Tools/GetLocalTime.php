@@ -7,7 +7,7 @@ use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
 use Stringable;
 
-class getLocalTime implements Tool
+class GetLocalTime implements Tool
 {
     /**
      * Get the description of the tool's purpose.
@@ -30,8 +30,6 @@ class getLocalTime implements Tool
      */
     public function schema(JsonSchema $schema): array
     {
-        return [
-            'value' => $schema->string()->required(),
-        ];
+        return [];
     }
 }
