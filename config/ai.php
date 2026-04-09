@@ -86,7 +86,14 @@ return [
 
         'groq' => [
             'driver' => 'groq',
-            'key' => env('GROQ_API_KEY'),
+            'key' => env('GROQ_API_KEY', env('OPENAI_API_KEY')),
+            'models' => [
+                'text' => [
+                    'default' => env('GROQ_MODEL', env('OPENAI_MODEL', 'openai/gpt-oss-120b')),
+                    'cheapest' => env('GROQ_MODEL_CHEAPEST', env('GROQ_MODEL', env('OPENAI_MODEL', 'openai/gpt-oss-20b'))),
+                    'smartest' => env('GROQ_MODEL_SMARTEST', env('GROQ_MODEL', env('OPENAI_MODEL', 'openai/gpt-oss-120b'))),
+                ],
+            ],
         ],
 
         'jina' => [

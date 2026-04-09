@@ -3,12 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Ai\Agents\PersonalAssistant;
+use App\Ai\Tools\ReadCalendar;
 use DateTimeInterface;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Laravel\Ai\Tools\Request;
 use Throwable;
 
 #[Signature('assistant:chat
@@ -66,15 +68,15 @@ class ChatWithAssistant extends Command
      */
     private function sendPrompt(string $prompt): int
     {
+        $calendarSummary = (new ReadCalendar)->handle(new Request(['days_ahead' => 7]));
+        $contextPrompt = implode("\n\n", [
+            'Current local time (Asia/Yangon): '.now()->timezone('Asia/Yangon')->format('Y-m-d H:i:s'),
+            "Upcoming calendar events (from storage/app/cal.ics):\n{$calendarSummary}",
+            "User request:\n{$prompt}",
+        ]);
+
         try {
-            $response = PersonalAssistant::make()->prompt(
-                $prompt,
-                provider: 'openrouter',
-                model: (string) config(
-                    'ai.providers.openrouter.models.text.default',
-                    'google/gemma-3-27b-it:free',
-                ),
-            );
+            $response = PersonalAssistant::make()->prompt($contextPrompt);
         } catch (Throwable $exception) {
             report($exception);
             $this->components->error(

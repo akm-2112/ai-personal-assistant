@@ -22,7 +22,9 @@ class GetLocalTime implements Tool
      */
     public function handle(Request $request): Stringable|string
     {
-        return now()->timezone('Asia/Yangon')->toDateTimeString();
+        $format = (string) ($request['format'] ?? 'Y-m-d H:i:s');
+
+        return now()->timezone('Asia/Yangon')->format($format);
     }
 
     /**

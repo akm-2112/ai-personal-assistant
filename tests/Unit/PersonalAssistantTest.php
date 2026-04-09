@@ -18,6 +18,8 @@ test('openrouter text model can be configured for personal assistant usage', fun
 });
 
 test('personal assistant exposes local calendar and scheduling tools', function () {
+    config()->set('ai.default', 'openrouter');
+
     $assistant = PersonalAssistant::make();
 
     $tools = collect($assistant->tools());
@@ -26,4 +28,12 @@ test('personal assistant exposes local calendar and scheduling tools', function 
         ->and($tools->first())->toBeInstanceOf(GetLocalTime::class)
         ->and($tools->get(1))->toBeInstanceOf(ReadCalendar::class)
         ->and($tools->last())->toBeInstanceOf(ScheduleTask::class);
+});
+
+test('personal assistant disables tool registration on groq provider', function () {
+    config()->set('ai.default', 'groq');
+
+    $assistant = PersonalAssistant::make();
+
+    expect(collect($assistant->tools()))->toHaveCount(0);
 });

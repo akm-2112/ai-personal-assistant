@@ -12,7 +12,10 @@ test('assistant chat command sends a prompt and prints the response', function (
         ->expectsOutput('Assistant: Start with your calendar priorities, then add expense tracking blocks.')
         ->assertSuccessful();
 
-    PersonalAssistant::assertPrompted('Plan my day around meetings');
+    PersonalAssistant::assertPrompted(fn ($recordedPrompt) => str_contains(
+        $recordedPrompt->prompt,
+        "User request:\nPlan my day around meetings",
+    ));
 });
 
 test('assistant chat command can seed a fake calendar file', function () {

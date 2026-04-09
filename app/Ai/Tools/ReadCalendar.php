@@ -23,6 +23,8 @@ class ReadCalendar implements Tool
      */
     public function handle(Request $request): Stringable|string
     {
+        $daysAhead = max(1, min(30, (int) ($request['days_ahead'] ?? 7)));
+
         if (! is_file(storage_path('app/cal.ics'))) {
             return 'Calendar file not found at storage/app/cal.ics.';
         }
@@ -32,7 +34,7 @@ class ReadCalendar implements Tool
 
         $events = collect($cal->getEvents()->sorted())
             ->filter(fn ($event) => $event['DTSTART'] >= now()->startOfDay()
-                && $event['DTSTART'] <= now()->addDays(3)->endOfDay())
+                && $event['DTSTART'] <= now()->addDays($daysAhead)->endOfDay())
             ->map(fn ($event) => sprintf(
                 '%s: %s',
                 $event['DTSTART']->format('l, d M (H:i)'),
@@ -40,7 +42,7 @@ class ReadCalendar implements Tool
             ));
 
         return $events->isEmpty()
-            ? 'No upcoming events in the next 3 days'
+            ? "No upcoming events in the next {$daysAhead} days"
             : $events->implode("\n");
     }
 

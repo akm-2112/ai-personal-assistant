@@ -23,6 +23,13 @@ class ScheduleTask implements Tool
      */
     public function handle(Request $request): Stringable|string
     {
+        $message = trim((string) ($request['message'] ?? ''));
+        $time = trim((string) ($request['time'] ?? ''));
+
+        if ($message === '' || $time === '') {
+            return 'Missing required fields. Please provide both "message" and "time".';
+        }
+
         $taskFile = storage_path('app/scheduled-task.json');
         $tasks = File::exists($taskFile)
             ? json_decode(File::get($taskFile), true)
@@ -33,8 +40,8 @@ class ScheduleTask implements Tool
         }
 
         $tasks[] = [
-            'time' => (string) $request['time'],
-            'message' => (string) $request['message'],
+            'time' => $time,
+            'message' => $message,
             'created_at' => now()->toDateTimeString(),
         ];
 
@@ -48,9 +55,6 @@ class ScheduleTask implements Tool
      */
     public function schema(JsonSchema $schema): array
     {
-        return [
-            'message' => $schema->string()->required(),
-            'time' => $schema->string()->required(),
-        ];
+        return [];
     }
 }

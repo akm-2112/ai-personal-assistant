@@ -42,6 +42,10 @@ class PersonalAssistant implements Agent, Conversational, HasTools
      */
     public function tools(): iterable
     {
+        if (config('ai.default') === 'groq') {
+            return [];
+        }
+
         return [
             new GetLocalTime,
             new ReadCalendar,
