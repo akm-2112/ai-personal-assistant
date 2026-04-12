@@ -1,0 +1,11 @@
+{
+    "name": "ExpenseTracker",
+    "alias": "expensetracker",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ExpenseTracker\\Providers\\ExpenseTrackerServiceProvider"
+    ],
+    "files": []
+}
