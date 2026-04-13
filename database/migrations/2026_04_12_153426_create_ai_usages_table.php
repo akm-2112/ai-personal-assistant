@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('prompt_tokens')->default(0);
             $table->integer('completion_tokens')->default(0);
             $table->integer('total_tokens')->default(0);
-            $table->decimal('cost', 15, 8)->default(0); // Using higher precision for micro-costs
+            $table->decimal('cost', 15, 8)->default(0);
             $table->json('input')->nullable();
             $table->json('output')->nullable();
             $table->timestamps();

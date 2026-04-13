@@ -2,3 +2,7 @@
 command = "php"
 args = ["artisan", "boost:mcp"]
 cwd = "/Users/aungkyawmoe/Desktop/personal-ai-assistant"
+
+[mcp_servers.pencil]
+command = "/Applications/Pencil.app/Contents/Resources/app.asar.unpacked/out/mcp-server-darwin-arm64"
+args = ["--app", "desktop"]

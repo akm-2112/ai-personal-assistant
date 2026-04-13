@@ -1,19 +1,19 @@
 <?php
 
-use Modules\ExpenseTracker\Models\Expense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\ExpenseTracker\Models\Expense;
+use Tests\TestCase;
 
-
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('can fetch expenses for a user via api route', function () {
-    /** @var \App\Models\User $user */
+    /** @var User $user */
     $user = User::factory()->create();
 
     // Create 3 expenses for this user
     Expense::factory()->count(3)->create([
-        'user_id' => $user->id
+        'user_id' => $user->id,
     ]);
 
     // Make an API request to the newly built route
@@ -24,15 +24,14 @@ it('can fetch expenses for a user via api route', function () {
 });
 
 it('can store a new manual expense', function () {
-    /** @var \App\Models\User $user */
+    /** @var User $user */
     $user = User::factory()->create();
-
     $payload = [
         'amount' => 500,
         'currency' => 'MMK',
         'description' => 'A manual expense test',
         'category' => 'Food',
-        'date' => '2026-04-12'
+        'date' => '2026-04-12',
     ];
 
     $response = $this->actingAs($user)->postJson('/api/expenses', $payload);

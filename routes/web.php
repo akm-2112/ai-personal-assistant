@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AssistantChatController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -10,6 +9,7 @@ Route::inertia('/', 'welcome', [
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::inertia('chat', 'chat')->name('chat');
 });
 
 require __DIR__.'/settings.php';
