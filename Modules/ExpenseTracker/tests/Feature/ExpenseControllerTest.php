@@ -20,7 +20,7 @@ it('can fetch expenses for a user via api route', function () {
     $response = $this->actingAs($user)->getJson('/api/expenses');
 
     $response->assertStatus(200)
-        ->assertJsonCount(3);
+        ->assertJsonCount(3, 'data');
 });
 
 it('can store a new manual expense', function () {
