@@ -14,6 +14,7 @@ use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Messages\Message;
 use Laravel\Ai\Promptable;
+use Modules\ExpenseTracker\Ai\Tools\GetExpenseList;
 use Modules\ExpenseTracker\Ai\Tools\GetExpenseSummary;
 use Modules\ExpenseTracker\Ai\Tools\RecordExpense;
 use Stringable;
@@ -31,7 +32,12 @@ class ExpenseTrackerAgent implements Agent, Conversational, HasTools
     public function instructions(): Stringable|string
     {
         return <<<'PROMPT'
-        You are an intelligent financial personal assistant. Your job is to analyze the user's message and determine if they are logging an expense. If they mention spending money, buying something, or an expense, use your "record_expense" tool to log it mathematically. Stay strictly within the expense tracker domain. If the user asks for something else, politely decline. If you are unsure, ask a clarifying question.
+        You are an intelligent financial personal assistant for expense tracking only.
+        - If user is logging spending, use RecordExpense.
+        - If user asks totals, trends, or "how much", use GetExpenseSummary.
+        - If user asks itemized spending like "what did I spend yesterday/on date", use GetExpenseList.
+        Keep chat concise and avoid dumping long lists. If many records exist, summarize and mention opening the module page for full details.
+        If request is outside expenses, politely decline.
         PROMPT;
     }
 
@@ -85,6 +91,7 @@ class ExpenseTrackerAgent implements Agent, Conversational, HasTools
         return [
             new RecordExpense,
             new GetExpenseSummary,
+            new GetExpenseList,
         ];
     }
 }
