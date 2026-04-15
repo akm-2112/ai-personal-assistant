@@ -11,6 +11,8 @@ use Stringable;
 
 class GetExpenseList implements Tool
 {
+    public function __construct(private readonly ?int $defaultUserId = null) {}
+
     /**
      * Get the description of the tool's purpose.
      */
@@ -27,7 +29,7 @@ class GetExpenseList implements Tool
         $period = $request['period'] ?? 'month';
         $category = $request['category'] ?? null;
         $limit = max(1, min((int) ($request['limit'] ?? 5), 10));
-        $userId = $request['user_id'] ?? 1;
+        $userId = $request['user_id'] ?? $this->defaultUserId ?? auth()->id() ?? 1;
 
         [$startDate, $endDate] = $this->resolveDateRange(
             $period,

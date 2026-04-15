@@ -10,6 +10,8 @@ use Stringable;
 
 class RecordExpense implements Tool
 {
+    public function __construct(private readonly ?int $defaultUserId = null) {}
+
     /**
      * Get the description of the tool's purpose.
      */
@@ -28,7 +30,7 @@ class RecordExpense implements Tool
         $description = $request['description'] ?? 'Misc Expense';
         $category = $request['category'] ?? 'Other';
         $date = $request['date'] ?? now()->format('Y-m-d');
-        $userId = $request['user_id'] ?? auth()->id() ?? 1;
+        $userId = $request['user_id'] ?? $this->defaultUserId ?? auth()->id() ?? 1;
 
         if ($amount <= 0) {
             return 'Failed to record expense. You must provide a valid numerical amount greater than 0.';
@@ -52,12 +54,12 @@ class RecordExpense implements Tool
     public function schema(JsonSchema $schema): array
     {
         return [
-            'amount' => 'Numeric amount spent (e.g., 5.00)',
-            'currency' => '3-letter currency code (e.g., MMK, USD). Defaults to MMK.',
-            'description' => 'What exactly was bought (e.g., Coffee, Movie ticket)',
-            'category' => 'Category (Food, Transport, Utilities, Entertainment, Shopping, Other)',
-            'date' => 'Date of the expense in YYYY-MM-DD format. Default to today if not specified.',
-            'user_id' => 'Optional user id in system context. Defaults to authenticated user or fallback.',
+            'amount' => $schema->number()->min(0.01)->description('Numeric amount spent, for example 5.00.')->required(),
+            'currency' => $schema->string()->description('Optional 3-letter currency code, for example MMK or USD. Defaults to MMK.'),
+            'description' => $schema->string()->description('Optional description of the expense, for example coffee or movie ticket.'),
+            'category' => $schema->string()->description('Expense category, for example Food, Transport, Utilities, Entertainment, Shopping, Other.')->required(),
+            'date' => $schema->string()->description('Optional expense date in YYYY-MM-DD format. Defaults to today.'),
+            'user_id' => $schema->integer()->description('Optional user id. Defaults to authenticated user context.'),
         ];
     }
 }

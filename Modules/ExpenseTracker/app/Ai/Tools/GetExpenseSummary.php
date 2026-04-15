@@ -11,6 +11,8 @@ use Stringable;
 
 class GetExpenseSummary implements Tool
 {
+    public function __construct(private readonly ?int $defaultUserId = null) {}
+
     /**
      * Get the description of the tool's purpose.
      */
@@ -26,7 +28,7 @@ class GetExpenseSummary implements Tool
     {
         $period = $request['period'] ?? 'month';
         $currency = $request['currency'] ?? 'MMK';
-        $userId = $request['user_id'] ?? 1;
+        $userId = $request['user_id'] ?? $this->defaultUserId ?? auth()->id() ?? 1;
 
         [$startDate, $endDate] = $this->resolveDateRange(
             $period,
@@ -82,11 +84,13 @@ class GetExpenseSummary implements Tool
     public function schema(JsonSchema $schema): array
     {
         return [
-            'period' => $schema->string()->enum(['today', 'week', 'month', 'year', 'custom'])->required(),
-            'date_from' => $schema->string()->description('Required when period is custom. Format: YYYY-MM-DD.'),
-            'date_to' => $schema->string()->description('Required when period is custom. Format: YYYY-MM-DD.'),
-            'currency' => $schema->string()->description('Optional currency code, defaults to MMK.'),
-            'user_id' => $schema->integer()->description('Optional user id; defaults to current context user.'),
+            'schema_definition' => $schema->object([
+                'period' => $schema->string()->enum(['today', 'week', 'month', 'year', 'custom'])->required(),
+                'date_from' => $schema->string()->description('Required when period is custom. Format: YYYY-MM-DD.'),
+                'date_to' => $schema->string()->description('Required when period is custom. Format: YYYY-MM-DD.'),
+                'currency' => $schema->string()->description('Optional currency code, defaults to MMK.'),
+                'user_id' => $schema->integer()->description('Optional user id; defaults to current context user.'),
+            ])->required(),
         ];
     }
 
