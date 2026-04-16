@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\ExpenseTracker\Classes\Ai\Support;
+namespace Modules\ExpenseTracker\Ai\Prompts;
 
 class ExpenseChatOrchestrationRules
 {

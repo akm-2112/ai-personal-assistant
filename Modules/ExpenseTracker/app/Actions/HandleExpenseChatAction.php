@@ -10,7 +10,7 @@ use Modules\ExpenseTracker\Ai\Agents\ExpenseTrackerAgent;
 
 class HandleExpenseChatAction
 {
-    public function __construct(private readonly LogAiUsageAction $usageLogger) {}
+    public function __construct() {}
 
     /**
      * Send a user message to the Expense Tracker agent and return a normalized payload.
@@ -31,64 +31,20 @@ class HandleExpenseChatAction
 
         $agent = ExpenseTrackerAgent::make(user: $user);
 
-        if ($conversationId !== null && $conversationId !== '') {
-            $agent->continue($conversationId, as: $user);
-        } else {
-            $agent->forUser($user);
-        }
+        // We delegate parsing, prompt generation, and usage logging to the customized Agent
+        $response = $agent->askAndLog($user, $message, $conversationId);
 
-        $run = $this->usageLogger->start($user, 'ExpenseTracker', $message);
-
-        try {
-            $provider = $this->resolveProvider();
-            $model = config("ai.providers.{$provider}.models.text.default");
-
-            $response = $agent->prompt(
-                $message,
-                provider: $provider,
-                model: is_string($model) ? $model : null,
-            );
-
-            $this->usageLogger->record($run, [
-                'model' => is_string($model) ? $model : '',
-                'provider' => $provider,
-                'prompt_tokens' => $response->usage->promptTokens,
-                'completion_tokens' => $response->usage->completionTokens,
-                'total_tokens' => $response->usage->promptTokens + $response->usage->completionTokens,
-                'input' => ['message' => $message],
-                'output' => ['text' => $response->text],
-            ]);
-
-            $this->usageLogger->finish($run, $response->text, [
-                'conversation_id' => $response->conversationId,
-                'tool_calls_count' => $response->toolCalls->count(),
-                'tool_results_count' => $response->toolResults->count(),
-            ]);
-
-            return [
-                'reply' => $response->text,
-                'conversation_id' => $response->conversationId,
-                'tool_calls' => $response->toolCalls->map(fn ($toolCall) => $toolCall->toArray())->values()->all(),
-                'tool_results' => $response->toolResults->map(fn ($toolResult) => $toolResult->toArray())->values()->all(),
-                'usage' => $response->usage->toArray(),
-                'module' => 'expense_tracker',
-                'ui_hints' => [
-                    'open_module' => route('expense-tracker.index'),
-                ],
-            ];
-        } catch (\Throwable $exception) {
-            $this->usageLogger->fail($run, $exception->getMessage());
-
-            throw $exception;
-        }
-    }
-
-    /**
-     * Resolve runtime provider for tool-compatible chat.
-     */
-    private function resolveProvider(): string
-    {
-        return (string) config('ai.default', 'openai');
+        return [
+            'reply' => $response->text,
+            'conversation_id' => $response->conversationId,
+            'tool_calls' => $response->toolCalls->map(fn ($toolCall) => $toolCall->toArray())->values()->all(),
+            'tool_results' => $response->toolResults->map(fn ($toolResult) => $toolResult->toArray())->values()->all(),
+            'usage' => $response->usage->toArray(),
+            'module' => 'expense_tracker',
+            'ui_hints' => [
+                'open_module' => route('expense-tracker.index'),
+            ],
+        ];
     }
 
     private function ensureConversationBelongsToUser(User $user, ?string $conversationId): void

@@ -5,6 +5,8 @@ namespace Modules\ExpenseTracker\Ai\Agents;
 use App\Actions\LogAiUsageAction;
 use App\Models\User;
 use Laravel\Ai\Attributes\MaxTokens;
+use Laravel\Ai\Attributes\Provider;
+use Laravel\Ai\Attributes\UseCheapestModel;
 use Laravel\Ai\Concerns\RemembersConversations;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\Conversational;
@@ -14,10 +16,12 @@ use Laravel\Ai\Promptable;
 use Modules\ExpenseTracker\Ai\Tools\GetExpenseList;
 use Modules\ExpenseTracker\Ai\Tools\GetExpenseSummary;
 use Modules\ExpenseTracker\Ai\Tools\RecordExpense;
-use Modules\ExpenseTracker\Classes\Ai\Support\ExpenseChatOrchestrationRules;
+use Modules\ExpenseTracker\Ai\Prompts\ExpenseChatOrchestrationRules;
 use Stringable;
 
 #[MaxTokens(1000)]
+#[Provider('gemini')]
+#[UseCheapestModel]
 class ExpenseTrackerAgent implements Agent, Conversational, HasTools
 {
     use Promptable;
@@ -36,9 +40,6 @@ class ExpenseTrackerAgent implements Agent, Conversational, HasTools
         ]);
     }
 
-    /**
-     * Ask the agent a question and log the usage.
-     */
     public function askAndLog(User $user, string $prompt, ?string $conversationId = null)
     {
         $this->user = $user;
@@ -53,18 +54,12 @@ class ExpenseTrackerAgent implements Agent, Conversational, HasTools
         $run = $logger->start($user, 'ExpenseTracker', $prompt);
 
         try {
-            $provider = $this->resolveProvider();
-            $model = config("ai.providers.{$provider}.models.text.default");
-
-            $response = $this->prompt(
-                $prompt,
-                provider: $provider,
-                model: is_string($model) ? $model : null,
-            );
+            // Because of #[Provider] and #[UseCheapestModel], we don't need to specify provider/model here!
+            $response = $this->prompt($prompt);
 
             $logger->record($run, [
-                'model' => is_string($model) ? $model : '',
-                'provider' => $provider,
+                'model' => $response->responseMeta->model ?? '',
+                'provider' => 'gemini',
                 'prompt_tokens' => $response->usage->promptTokens,
                 'completion_tokens' => $response->usage->completionTokens,
                 'total_tokens' => $response->usage->promptTokens + $response->usage->completionTokens,
@@ -81,14 +76,6 @@ class ExpenseTrackerAgent implements Agent, Conversational, HasTools
             $logger->fail($run, $e->getMessage());
             throw $e;
         }
-    }
-
-    /**
-     * Resolve runtime provider for tool-compatible chat.
-     */
-    private function resolveProvider(): string
-    {
-        return (string) config('ai.default', 'openai');
     }
 
     /**
