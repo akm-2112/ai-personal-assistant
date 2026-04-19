@@ -1,15 +1,15 @@
-# OpenClaw OS 🤖
+# Ai Assistant
 
-**OpenClaw OS** is a modular, AI-first personal assistant designed to automate life management. It is built as a Laravel Modular Monolith, where every life aspect (Finance, Planning, Communication) exists as an independent, AI-powered module.
+This is a modular, AI-first personal assistant designed to automate life management. It is built as a Laravel Modular Monolith, where every life aspect (Finance, Planning, Communication) exists as an independent, AI-powered module.
 
-## ✨ Modules
-### 💰 Expense Tracker
+## Modules
+### Expense Tracker
 An intelligent financial companion that allows you to manage your spending through simple natural language.
 - **Language**: I spent 20k on dinner.
 - **Query**: How much did I spend last week?
 - **Logic**: Uses Gemini 1.5 Flash for high-speed tool orchestration.
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Backend**: Laravel 13 (PHP 8.4)
 - **Frontend**: React 19 + Inertia.js v3 (Vite 6)
 - **Styling**: Tailwind CSS v4
@@ -17,7 +17,7 @@ An intelligent financial companion that allows you to manage your spending throu
 - **AI Engine**: `laravel/ai` + `prism-php/prism`
 - **Modules**: `nwidart/laravel-modules`
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### 1. Prerequisites
 - PHP 8.4+
@@ -26,8 +26,8 @@ An intelligent financial companion that allows you to manage your spending throu
 
 ### 2. Installation
 ```bash
-git clone https://github.com/your-username/openclaw-os.git
-cd openclaw-os
+git clone https://github.com/akm-2112/ai-personal-assistant
+cd ...
 composer install
 npm install
 ```
@@ -49,7 +49,7 @@ npm run build
 composer run dev
 ```
 
-## 📜 Project Structure
+## Project Structure
 - `Modules/`: Contains all feature-specific code (Logic, AI Tools, Controllers).
 - `app/Ai/`: Global AI base configurations and logging.
 - `resources/js/`: React components and Inertia pages.
