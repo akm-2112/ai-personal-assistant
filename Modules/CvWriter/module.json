@@ -1,0 +1,11 @@
+{
+    "name": "CvWriter",
+    "alias": "cvwriter",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CvWriter\\Providers\\CvWriterServiceProvider"
+    ],
+    "files": []
+}

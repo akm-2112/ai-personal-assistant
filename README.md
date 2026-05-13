@@ -1,6 +1,6 @@
-# Ai Assistant
+# AI PERSONAL ASSISTANT
 
-This is a modular, AI-first personal assistant designed to automate life management. It is built as a Laravel Modular Monolith, where every life aspect (Finance, Planning, Communication) exists as an independent, AI-powered module.
+**AI PERSONAL ASSISTANT** is a modular, AI-first personal assistant designed to automate life management. It is built as a Laravel Modular Monolith, where every life aspect (Finance, Planning, Communication) exists as an independent, AI-powered module.
 
 ## Modules
 ### Expense Tracker
@@ -18,7 +18,6 @@ An intelligent financial companion that allows you to manage your spending throu
 - **Modules**: `nwidart/laravel-modules`
 
 ## Setup & Installation
-
 ### 1. Prerequisites
 - PHP 8.4+
 - Node.js 20+
@@ -27,7 +26,7 @@ An intelligent financial companion that allows you to manage your spending throu
 ### 2. Installation
 ```bash
 git clone https://github.com/akm-2112/ai-personal-assistant
-cd ...
+cd ai-personal-assistant
 composer install
 npm install
 ```
