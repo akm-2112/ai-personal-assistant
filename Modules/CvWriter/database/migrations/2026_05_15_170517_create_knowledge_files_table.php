@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('knowledge_files', function (Blueprint $table) {
             $table->id();
-            
+            $table->string('title');
+            $table->string('category')->index();
+            $table->longText('raw_content');
+            $table->boolean('is_active')->index();
+            $table->timestamp('last_ingested_at')->index();
             $table->timestamps();
         });
     }
