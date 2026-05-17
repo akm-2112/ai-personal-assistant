@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('category')->index();
             $table->longText('raw_content');
-            $table->boolean('is_active')->index();
-            $table->timestamp('last_ingested_at')->index();
+            $table->boolean('is_active')->default(true)->index();
+            $table->timestamp('last_ingested_at')->nullable()->index();
             $table->timestamps();
         });
     }
